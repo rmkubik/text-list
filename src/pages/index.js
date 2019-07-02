@@ -1,3 +1,10 @@
-import React from "react"
+// ./src/pages/index.js
+import React from 'react';
+import { Link } from 'gatsby';
 
-export default () => <div>Hello world!</div>
+export default () => (
+  <div>
+    <p>Hello Gatsby!</p>
+    <Link to="/account">Go to your account</Link>
+  </div>
+);
