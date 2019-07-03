@@ -69,4 +69,4 @@ yarn-error.log
 .yarn-integrity
 
 # Netlify lambda functions build dir
-functions
+/functions
