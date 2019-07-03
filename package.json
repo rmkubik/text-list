@@ -22,8 +22,10 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
+    "dotenv": "^8.0.0",
     "netlify-lambda": "^1.4.13",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "twilio": "^3.33.0"
   },
   "repository": {
     "type": "git",
