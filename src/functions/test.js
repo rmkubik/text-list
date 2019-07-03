@@ -1,6 +1,7 @@
-exports.handler = function(event, context, callback) {
-  const jwksClient = require('jwks-rsa');
+const jwksClient = require('jwks-rsa');
+const jwt = require('jsonwebtoken');
 
+exports.handler = async function(event, context, callback) {
   const client = jwksClient({
     cache: true,
     rateLimit: true,
@@ -11,12 +12,20 @@ exports.handler = function(event, context, callback) {
   // gotten from auth0 jwks.json
   const kid = 'RDE5N0Q1NTEwMEUyQTUyRDY4NzcwMzhENTdERjQ2MjUxNTc3N0IyQQ';
 
-  client.getSigningKey(kid, (err, key) => {
-    const signingKey = key.publicKey || key.rsaPublicKey;
+  const signingKey = await new Promise((resolve, reject) => {
+    client.getSigningKey(kid, (err, key) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(key.publicKey || key.rsaPublicKey);
+      }
+    });
+  });
 
-    const headerType = 'Authorization: Bearer ';
-    const token = event.headers.authorization.slice(headerType.length);
+  const headerType = 'Bearer ';
+  const token = event.headers.authorization.slice(headerType.length);
 
+  try {
     const decoded = jwt.verify(token, signingKey);
 
     callback(null, {
@@ -31,5 +40,10 @@ exports.handler = function(event, context, callback) {
         2
       ),
     });
-  });
+  } catch (err) {
+    callback(null, {
+      statusCode: 200,
+      body: JSON.stringify(err, undefined, 2),
+    });
+  }
 };
