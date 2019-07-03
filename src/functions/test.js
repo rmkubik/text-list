@@ -6,11 +6,12 @@ exports.handler = async function(event, context, callback) {
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 10, // Default value
-    jwksUri: 'https://dev-c15ae8r6.auth0.com/.well-known/jwks.json',
+    jwksUri: process.env.AUTH0_JWKS_URI,
   });
 
   // gotten from auth0 jwks.json
-  const kid = 'RDE5N0Q1NTEwMEUyQTUyRDY4NzcwMzhENTdERjQ2MjUxNTc3N0IyQQ';
+  // TODO: should we be pulling this from the decoded jwt?
+  const kid = process.env.AUTH0_JWT_KID;
 
   const signingKey = await new Promise((resolve, reject) => {
     client.getSigningKey(kid, (err, key) => {
